@@ -47,12 +47,10 @@ public class AnnotationEvaluator implements WebService {
     }
 
 
-    static List<Annotation> findAnnotations(Container container, String type, String producer,
-                                            String feature) {
+    static List<Annotation> findAnnotations(Container container, String type, String producer, String feature) {
         List<Annotation> annotations = new ArrayList<>();
 
-        List<View> views = container
-                .findViewsThatContainBy(type, producer);
+        List<View> views = container.findViewsThatContainBy(type, producer);
         for (View view : views) {
             List<Annotation> viewAnnotations = view.getAnnotations();
             for (Annotation viewAnnotation : viewAnnotations) {
@@ -61,20 +59,19 @@ public class AnnotationEvaluator implements WebService {
                 }
             }
         }
-
         return annotations;
     }
 
 
-    public static Map<Span, String> getSpanOutcomeMap(List<Annotation> annotations, String outcomeType) {
-        Map<Span, String> spanToOutcome = new HashMap<Span, String>();
+    public static Map<Span, String> getSpanOutcomeMap(List<Annotation> annotations, String featureName) {
+        Map<Span, String> spanToOutcome = new HashMap<>();
         if (annotations == null) {
             return spanToOutcome;
         }
 
         for (Annotation annotation : annotations) {
-            Span span = new Span(annotation);
-            Object outcome = annotation.getFeature(outcomeType);
+            Span span = createSpan(annotation);
+            Object outcome = annotation.getFeature(featureName);
             String featureString = "";
             if (outcome != null) {
                 featureString = (String) outcome;
@@ -82,6 +79,10 @@ public class AnnotationEvaluator implements WebService {
             spanToOutcome.put(span, featureString);
         }
         return spanToOutcome;
+    }
+
+    static Span createSpan(Annotation annotation) {
+        return new Span(annotation.getStart(), annotation.getEnd());
     }
 
     @Override
@@ -115,6 +116,7 @@ public class AnnotationEvaluator implements WebService {
     }
 
     private String setEvalConfig(String data, EvaluationConfig evalConfig) {
+
         Data<Object> result = Serializer.parse(data, Data.class);
         Object payload = result.getPayload();
         Container container = new Container((Map) payload);
