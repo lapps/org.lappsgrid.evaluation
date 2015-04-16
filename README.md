@@ -20,6 +20,8 @@ An example configuration json object looks like:
    }
 ...
 ```
+Inside the configuration object, the prefix `gold-` is short for reference outputs, and prefix `test-` is short for predicted outputs.
+
 
 An example Java code to setup "evaluation-configuration" object:
 ```java
