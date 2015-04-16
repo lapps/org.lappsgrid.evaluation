@@ -88,7 +88,7 @@ public class AnnotationEvaluator implements WebService {
     @Override
     public String execute(String input) {
         //input = setDefaultEvalConfig(input); //for testing example
-        System.out.println("AnnotationEvaluator started... with input size:" + input.length());
+        System.out.println("AnnotationEvaluator started... with input size: " + input.length());
         String eval_result = "";
         try {
             Data<Object> result = Serializer.parse(input, Data.class);

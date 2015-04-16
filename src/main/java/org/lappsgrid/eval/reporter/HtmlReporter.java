@@ -26,6 +26,7 @@ public class HtmlReporter {
     static String HTML_PAGE_END = "</table></div></body></html>";
 
     static String TABLE_HEADER = "<table cellpadding=\"0\" border=\"1\">\n" +
+            "<tr> <th colspan=\"3\" align=\"left\">Reference Outputs</th>  <th colspan=\"3\" align=\"left\">Predicted Outputs</th></tr>" +
             "<tr>\n" +
             "  <th align=\"left\">Start</th>\n" +
             "  <th align=\"left\">End</th>\n" +
@@ -60,7 +61,7 @@ public class HtmlReporter {
     public String toHtmlString() {
         StringBuffer sb = new StringBuffer();
 
-        sb.append("Gold output counts: " + eval.countReferenceOutcomes() + "<br>");
+        sb.append("Reference output counts: " + eval.countReferenceOutcomes() + "<br>");
         sb.append("Predicted output counts: " + eval.countPredictedOutcomes() + "<br>");
         sb.append("Correct matches: " + eval.countCorrectOutcomes() + "<br><br>");
         sb.append("Precision: " + threePlace.format(eval.precision()) + "<br>");
