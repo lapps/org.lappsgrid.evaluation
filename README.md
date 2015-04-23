@@ -4,7 +4,7 @@
 The `evaluation` module computes the evluation metrics and outputs an HTML report over two sets annotations 
 in the LAPPS JSON format.
 
-It reads the "evaluation-configuration" object from the LAPPS JSON object's metadata to locate the right pairs of annotations.
+It reads the `evaluation-configuration` object from the LAPPS JSON object's metadata to locate the right pairs of annotations.
 An example configuration json object looks like:
 ```json
 ...
@@ -16,12 +16,13 @@ An example configuration json object looks like:
          "testAnnotationType":"http://vocab.lappsgrid.org/Token",
          "goldAnnotationFeature":"word",
          "testAnnotationFeature":"word"
+         "outputFormat":"html"
       }
    }
 ...
 ```
 Inside the configuration object, the prefix `gold-` is short for reference outputs, and prefix `test-` is short for predicted outputs.
-
+The `outputFormat` can be either `html` or `json`.
 
 An example Java code to setup "evaluation-configuration" object:
 ```java

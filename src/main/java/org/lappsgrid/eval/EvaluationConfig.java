@@ -2,64 +2,74 @@ package org.lappsgrid.eval;
 
 public class EvaluationConfig {
 
-  String goldAnnotationProducer = "org.anc.lapps.stanford.Tokenizer:2.0.0";
+    String goldAnnotationProducer = "org.anc.lapps.stanford.Tokenizer:2.0.0";
 
-  String testAnnotationProducer = "org.anc.lapps.stanford.Tokenizer:2.0.0";
+    String testAnnotationProducer = "org.anc.lapps.stanford.Tokenizer:2.0.0";
 
-  String goldAnnotationType = "http://vocab.lappsgrid.org/Token";
+    String goldAnnotationType = "http://vocab.lappsgrid.org/Token";
 
-  String testAnnotationType = "http://vocab.lappsgrid.org/Token";
+    String testAnnotationType = "http://vocab.lappsgrid.org/Token";
 
-  String goldAnnotationFeature = "word";
+    String goldAnnotationFeature = "word";
 
-  String testAnnotationFeature = "word";
+    String testAnnotationFeature = "word";
 
-  public String getTestAnnotationType() {
-    return testAnnotationType;
-  }
+    String outputFormat = "html"; //or json
 
-  public void setTestAnnotationType(String testAnnotationType) {
-    this.testAnnotationType = testAnnotationType;
-  }
+    public String getTestAnnotationType() {
+        return testAnnotationType;
+    }
 
-  public String getGoldAnnotationFeature() {
-    return goldAnnotationFeature;
-  }
+    public void setTestAnnotationType(String testAnnotationType) {
+        this.testAnnotationType = testAnnotationType;
+    }
 
-  public void setGoldAnnotationFeature(String goldAnnotationFeature) {
-    this.goldAnnotationFeature = goldAnnotationFeature;
-  }
+    public String getGoldAnnotationFeature() {
+        return goldAnnotationFeature;
+    }
 
-  public String getGoldAnnotationType() {
-    return goldAnnotationType;
-  }
+    public void setGoldAnnotationFeature(String goldAnnotationFeature) {
+        this.goldAnnotationFeature = goldAnnotationFeature;
+    }
 
-  public void setGoldAnnotationType(String goldAnnotationType) {
-    this.goldAnnotationType = goldAnnotationType;
-  }
+    public String getGoldAnnotationType() {
+        return goldAnnotationType;
+    }
 
-  public String getTestAnnotationFeature() {
-    return testAnnotationFeature;
-  }
+    public void setGoldAnnotationType(String goldAnnotationType) {
+        this.goldAnnotationType = goldAnnotationType;
+    }
 
-  public void setTestAnnotationFeature(String testAnnotationFeature) {
-    this.testAnnotationFeature = testAnnotationFeature;
-  }
+    public String getTestAnnotationFeature() {
+        return testAnnotationFeature;
+    }
 
-  public String getGoldAnnotationProducer() {
-    return goldAnnotationProducer;
-  }
+    public void setTestAnnotationFeature(String testAnnotationFeature) {
+        this.testAnnotationFeature = testAnnotationFeature;
+    }
 
-  public void setGoldAnnotationProducer(String goldAnnotationProducer) {
-    this.goldAnnotationProducer = goldAnnotationProducer;
-  }
+    public String getGoldAnnotationProducer() {
+        return goldAnnotationProducer;
+    }
 
-  public String getTestAnnotationProducer() {
-    return testAnnotationProducer;
-  }
+    public void setGoldAnnotationProducer(String goldAnnotationProducer) {
+        this.goldAnnotationProducer = goldAnnotationProducer;
+    }
 
-  public void setTestAnnotationProducer(String testAnnotationProducer) {
-    this.testAnnotationProducer = testAnnotationProducer;
-  }
+    public String getTestAnnotationProducer() {
+        return testAnnotationProducer;
+    }
+
+    public void setTestAnnotationProducer(String testAnnotationProducer) {
+        this.testAnnotationProducer = testAnnotationProducer;
+    }
+
+    public String getOutputFormat() {
+        return outputFormat;
+    }
+
+    public void setOutputFormat(String outputFormat) {
+        this.outputFormat = outputFormat;
+    }
 
 }

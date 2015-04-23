@@ -1,19 +1,17 @@
 package org.lappsgrid.eval.reporter;
 
 import org.lappsgrid.eval.model.Span;
-import org.lappsgrid.eval.model.SpanEvaluation;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
-public class HtmlReporter {
+public class HtmlReporter extends Reporter {
 
     static final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
@@ -44,21 +42,12 @@ public class HtmlReporter {
 
     static String RIGHT_COLOR = "bgcolor=\"#ffffff\"";
 
-    private static DecimalFormat threePlace = new DecimalFormat("#0.000");
-
-    SpanEvaluation<String> eval;
-    Map<Span, String> goldSpanOut;
-    Map<Span, String> predictSpanOut;
-
     public HtmlReporter(Map<Span, String> goldSpanOut, Map<Span, String> predictSpanOut) {
-        super();
-        this.goldSpanOut = goldSpanOut;
-        this.predictSpanOut = predictSpanOut;
-        eval = new SpanEvaluation<String>();
-        eval.add(goldSpanOut, predictSpanOut);
+        super(goldSpanOut, predictSpanOut);
     }
 
-    public String toHtmlString() {
+    @Override
+    public String report() {
         StringBuffer sb = new StringBuffer();
 
         sb.append("Reference output counts: " + eval.countReferenceOutcomes() + "<br>");
@@ -101,12 +90,5 @@ public class HtmlReporter {
         sb.insert(0, HTML_PAGE_HEAD).append(HTML_PAGE_END);
         return sb.toString();
     }
-
-    public void saveToHtmlFile(String filepath) throws FileNotFoundException {
-        PrintWriter out = new PrintWriter(filepath);
-        out.println(toHtmlString());
-        out.close();
-    }
-
 
 }

@@ -5,6 +5,8 @@ import org.json.simple.parser.ParseException;
 import org.lappsgrid.api.WebService;
 import org.lappsgrid.eval.reporter.HtmlReporter;
 import org.lappsgrid.eval.model.Span;
+import org.lappsgrid.eval.reporter.JsonReporter;
+import org.lappsgrid.eval.reporter.Reporter;
 import org.lappsgrid.serialization.Data;
 import org.lappsgrid.serialization.Serializer;
 import org.lappsgrid.serialization.lif.Annotation;
@@ -39,11 +41,22 @@ public class AnnotationEvaluator implements WebService {
                 evalConfig.getTestAnnotationType(),
                 evalConfig.getTestAnnotationProducer(), evalConfig.getTestAnnotationFeature());
 
-        HtmlReporter htmlReporter = new HtmlReporter(
-                getSpanOutcomeMap(goldAnnotations, evalConfig.getGoldAnnotationFeature()),
-                getSpanOutcomeMap(testAnnotations, evalConfig.getTestAnnotationFeature()));
+        Map<Span, String> goldSpanOutMap = getSpanOutcomeMap(goldAnnotations, evalConfig.getGoldAnnotationFeature());
+        Map<Span, String> testSpanOutMap = getSpanOutcomeMap(testAnnotations, evalConfig.getTestAnnotationFeature());
 
-        return htmlReporter.toHtmlString();
+        Reporter reporter;
+        switch (evalConfig.getOutputFormat()) {
+            case "json":
+                reporter = new JsonReporter(goldSpanOutMap, testSpanOutMap);
+                break;
+            case "html":
+                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap);
+                break;
+            default:
+                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap);
+                break;
+        }
+        return reporter.report();
     }
 
 
