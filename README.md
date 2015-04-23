@@ -15,7 +15,7 @@ An example configuration json object looks like:
          "goldAnnotationType":"http://vocab.lappsgrid.org/Token",
          "testAnnotationType":"http://vocab.lappsgrid.org/Token",
          "goldAnnotationFeature":"word",
-         "testAnnotationFeature":"word"
+         "testAnnotationFeature":"word",
          "outputFormat":"html"
       }
    }
