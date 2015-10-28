@@ -83,7 +83,7 @@ public class AnnotationEvaluator implements WebService {
         for (View view : views) {
             List<Annotation> viewAnnotations = view.getAnnotations();
             for (Annotation viewAnnotation : viewAnnotations) {
-                if (viewAnnotation.getLabel().equals(type)) {
+                if (viewAnnotation.getAtType().equals(type)) {
                     annotations.add(viewAnnotation);
                 }
             }
