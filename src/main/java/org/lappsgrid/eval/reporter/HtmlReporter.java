@@ -48,6 +48,7 @@ public class HtmlReporter extends Reporter {
             "  <th align=\"left\">Start</th>\n" +
             "  <th align=\"left\">End</th>\n" +
             "  <th align=\"left\">Features</th>\n" +
+            "  <th align=\"left\">Text</th>\n" +
             "</tr>";
 
     static String ONLY_GOLD_COLOR = "bgcolor=\"#ffadb5\"";
@@ -58,8 +59,11 @@ public class HtmlReporter extends Reporter {
 
     static String RIGHT_COLOR = "bgcolor=\"#ffffff\"";
 
-    public HtmlReporter(Map<Span, String> goldSpanOut, Map<Span, String> predictSpanOut) {
+    protected String text;
+
+    public HtmlReporter(Map<Span, String> goldSpanOut, Map<Span, String> predictSpanOut, String text) {
         super(goldSpanOut, predictSpanOut);
+        this.text = text;
     }
 
     @Override
@@ -86,6 +90,11 @@ public class HtmlReporter extends Reporter {
             boolean isGoldMatched = goldSpanOut.containsKey(span);
             boolean isPredMatched = predictSpanOut.containsKey(span);
             boolean isMatched = (isGoldMatched && isPredMatched);
+            int end = (int) span.end;
+            if (end > text.length()) {
+               end = text.length();
+            }
+            String spanText = text.substring((int) span.start, end);
 
             String color = isMatched ?
                     (goldSpanOut.get(span).equalsIgnoreCase(predictSpanOut.get(span))) ? RIGHT_COLOR : WRONG_COLOR :
@@ -99,7 +108,7 @@ public class HtmlReporter extends Reporter {
             sb.append("<td ").append(color).append(">").append(isPredMatched ? span.start : "").append("</td>");
             sb.append("<td ").append(color).append(">").append(isPredMatched ? span.end : "").append("</td>");
             sb.append("<td ").append(color).append(">").append(isPredMatched ? predictSpanOut.get(span) : "").append("</td>");
-
+            sb.append("<td>").append(spanText).append("</td>");
             sb.append("\n</tr>");
         }
 
