@@ -28,6 +28,8 @@ import org.lappsgrid.serialization.Serializer;
 import org.lappsgrid.serialization.lif.Annotation;
 import org.lappsgrid.serialization.lif.Container;
 import org.lappsgrid.serialization.lif.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ import java.util.Map;
  */
 
 public class AnnotationEvaluator implements WebService {
+//    private static final Logger logger = LoggerFactory.getLogger(AnnotationEvaluator.class);
 
     public static final String VERSION = "0.0.1-SNAPSHOT";
 
@@ -48,7 +51,7 @@ public class AnnotationEvaluator implements WebService {
 
     static public String evaluate(Container container, EvaluationConfig evalConfig) throws IOException,
             ParseException {
-
+//        logger.info("Evaluating container");
         List<Annotation> goldAnnotations = findAnnotations(container,
                 evalConfig.getGoldAnnotationType(),
                 evalConfig.getGoldAnnotationProducer(), evalConfig.getGoldAnnotationFeature());
@@ -117,6 +120,7 @@ public class AnnotationEvaluator implements WebService {
     @Override
     public String execute(String input) {
         //input = setDefaultEvalConfig(input); //for testing example
+//        logger.info("AnnotationEvaluator started... with input size: {}", input.length());
         System.out.println("AnnotationEvaluator started... with input size: " + input.length());
         String eval_result = "";
         try {
