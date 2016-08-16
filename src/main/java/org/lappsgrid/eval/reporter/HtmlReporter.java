@@ -16,10 +16,9 @@
  */
 package org.lappsgrid.eval.reporter;
 
+import org.lappsgrid.eval.EvaluationConfig;
 import org.lappsgrid.eval.model.Span;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,10 +59,12 @@ public class HtmlReporter extends Reporter {
     static String RIGHT_COLOR = "bgcolor=\"#ffffff\"";
 
     protected String text;
+    EvaluationConfig evalConfig;
 
-    public HtmlReporter(Map<Span, String> goldSpanOut, Map<Span, String> predictSpanOut, String text) {
+    public HtmlReporter(Map<Span, String> goldSpanOut, Map<Span, String> predictSpanOut, String text, EvaluationConfig evalConfig) {
         super(goldSpanOut, predictSpanOut);
         this.text = text;
+        this.evalConfig = evalConfig;
     }
 
     @Override
@@ -76,6 +77,11 @@ public class HtmlReporter extends Reporter {
         sb.append("Precision: " + threePlace.format(eval.precision()) + "<br>");
         sb.append("Recall: " + threePlace.format(eval.recall()) + "<br>");
         sb.append("F1: " + threePlace.format(eval.f1()) + "<br><br>");
+
+
+        sb.append("Reference Source configuration: " +  evalConfig.getGoldAnnotationProducer() + " - " + evalConfig.getGoldAnnotationType() + " - " + evalConfig.getGoldAnnotationFeature()+ "<br>");
+        sb.append("Testing Module configuration: " +  evalConfig.getTestAnnotationProducer() + " - " + evalConfig.getTestAnnotationType() + " - " + evalConfig.getTestAnnotationFeature()+ "<br>");
+        sb.append("<br>");
 
         sb.append(TABLE_HEADER);
 

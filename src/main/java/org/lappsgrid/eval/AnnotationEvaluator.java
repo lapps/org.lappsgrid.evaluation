@@ -69,10 +69,10 @@ public class AnnotationEvaluator implements WebService {
                 reporter = new JsonReporter(goldSpanOutMap, testSpanOutMap);
                 break;
             case "html":
-                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, container.getText());
+                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, container.getText(), evalConfig);
                 break;
             default:
-                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, container.getText());
+                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, container.getText(), evalConfig);
                 break;
         }
         return reporter.report();
