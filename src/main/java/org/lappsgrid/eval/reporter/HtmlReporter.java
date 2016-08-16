@@ -79,8 +79,8 @@ public class HtmlReporter extends Reporter {
         sb.append("F1: " + threePlace.format(eval.f1()) + "<br><br>");
 
 
-        sb.append(String.format("Reference Producer: %s<br> Annotation Type: %s, Annotation Feature%s<br><br>", evalConfig.getGoldAnnotationProducer(),evalConfig.getGoldAnnotationType(),evalConfig.getGoldAnnotationFeature()));
-        sb.append(String.format("Prediction Producer: %s<br> Annotation Type: %s, Annotation Feature%s<br><br>", evalConfig.getTestAnnotationProducer(),evalConfig.getTestAnnotationType(),evalConfig.getTestAnnotationFeature()));
+        sb.append(String.format("Reference Producer: %s<br>  Type: %s,  Feature: %s<br><br>", evalConfig.getGoldAnnotationProducer(),evalConfig.getGoldAnnotationType(),evalConfig.getGoldAnnotationFeature()));
+        sb.append(String.format("Prediction Producer: %s<br> Type: %s,  Feature: %s<br><br>", evalConfig.getTestAnnotationProducer(),evalConfig.getTestAnnotationType(),evalConfig.getTestAnnotationFeature()));
 
         sb.append(TABLE_HEADER);
 
