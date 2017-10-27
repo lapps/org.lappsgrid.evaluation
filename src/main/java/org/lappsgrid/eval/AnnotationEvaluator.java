@@ -44,12 +44,14 @@ import java.util.Map;
 public class AnnotationEvaluator implements WebService {
 //    private static final Logger logger = LoggerFactory.getLogger(AnnotationEvaluator.class);
 
+    public static final String DISCRIMINATOR = "http://vocab.lappsgrid.org/ns/media/jsonld#document-list";
+
     public static final String VERSION = "0.0.1-SNAPSHOT";
 
     public static final String EVALUATION_CONFIGURATION_NAME = "evaluation-configuration";
 
 
-    static public Map evaluate(Container predictedData, Container goldData, EvaluationConfig evalConfig) throws IOException,
+    static public String evaluate(Container predictedData, Container goldData, EvaluationConfig evalConfig) throws IOException,
             ParseException {
 //        logger.info("Evaluating container");
         List<Annotation> goldAnnotations = findAnnotations(predictedData,
@@ -64,24 +66,32 @@ public class AnnotationEvaluator implements WebService {
         Map<Span, String> testSpanOutMap = getSpanOutcomeMap(testAnnotations, evalConfig.getTestAnnotationFeature());
 
         Reporter reporter;
+        String result = null;
         switch (evalConfig.getOutputFormat()) {
+            // For JSON, the reporter will return the JSON string of the confusion matrix,
+            // which will be put into the metadata
             case "json":
                 reporter = new JsonReporter(goldSpanOutMap, testSpanOutMap);
+                String reporterResult = reporter.report();
+                Map predictedMetadata = predictedData.getMetadata();
+                predictedMetadata.put("confusion-matrix", reporterResult);
+                predictedData.setMetadata(predictedMetadata);
+                result = new Data(Discriminators.Uri.LIF, predictedData).asJson();
                 break;
-            /*
+
+            // For the HTML, return the report directly
             case "html":
-                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, container.getText(), evalConfig);
+                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, predictedData.getText(), evalConfig);
+                result = reporter.report();
                 break;
-            */
+
             default:
-                reporter = new JsonReporter(goldSpanOutMap, testSpanOutMap);
+                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, predictedData.getText(), evalConfig);
+                result = reporter.report();
                 break;
         }
 
-        String reporterResult = reporter.report();
-        Map predictedMetadata = predictedData.getMetadata();
-        predictedMetadata.put("confusion-matrix", reporterResult);
-        return predictedMetadata;
+        return result;
     }
 
 
@@ -124,13 +134,15 @@ public class AnnotationEvaluator implements WebService {
     }
 
     @Override
-    public String execute(String input) {
+    public String execute(String input)
+    {
         //input = setDefaultEvalConfig(input); //for testing example
 //        logger.info("AnnotationEvaluator started... with input size: {}", input.length());
         //System.out.println("AnnotationEvaluator started... with input size: " + input.length());
-
-        Container predictedData;
-        try {
+        
+        String eval_result = "";
+        try
+        {
 
             Data<Object> data = Serializer.parse(input, Data.class);
             String discriminator = data.getDiscriminator();
@@ -143,32 +155,30 @@ public class AnnotationEvaluator implements WebService {
 
 
             // If the input discriminator is wrong, return an error
-            else if(!Discriminators.Uri.DOCUMENT.equals(discriminator))
+            else if(!DISCRIMINATOR.equals(discriminator))
             {
                 return new Data(Discriminators.Uri.ERROR, "Invalid input").asJson();
             }
 
             Map payloadMap = (Map) data.getPayload();
             Container goldData = new Container((Map) payloadMap.get("gold"));
-            predictedData = new Container((Map) payloadMap.get("predicted"));
-            
+            Container predictedData = new Container((Map) payloadMap.get("predicted"));
+
+            Map<String, String> evalConfigMap = (Map<String, String>) predictedData.getMetadata(EVALUATION_CONFIGURATION_NAME);
+
             ObjectMapper mapper = new ObjectMapper();
             EvaluationConfig evalConfig = mapper.convertValue(evalConfigMap, EvaluationConfig.class);
 
-            if (evalConfig == null) {
-                evalConfig = new EvaluationConfig(); // use default
-            }
+            if (evalConfig == null) { evalConfig = new EvaluationConfig(); } // use default
 
-            Map eval_result = evaluate(predictedData, goldData, evalConfig);
+            eval_result = evaluate(predictedData, goldData, evalConfig);
             //System.out.println("AnnotationEvaluator ended with output size: " + eval_result.length());
-            predictedData.setMetadata(eval_result);
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        catch (Exception e) { e.printStackTrace(); }
 
-        return new Data(Discriminators.Uri.LIF, predictedData).asJson();
+        return eval_result;
     }
 
     private String setDefaultEvalConfig(String data) {

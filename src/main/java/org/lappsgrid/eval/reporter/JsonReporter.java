@@ -16,22 +16,13 @@
  */
 package org.lappsgrid.eval.reporter;
 
-import org.json.simple.JSONObject;
 import org.lappsgrid.eval.model.Span;
+import org.lappsgrid.serialization.Serializer;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JsonReporter extends Reporter {
-
-    // TODO: Change to calculate the confusion matrix for the results of the comparison
-    // TODO: and store that as a JSON data inside the metadata
-
-    //TODO: Iterate over all the documents and calculate the f-score, precision: how many right, recall: how many from , confusion matrix,
-    //TODo: Calculate for all and sum + divide
 
     public JsonReporter(Map<Span, String> goldSpanOut, Map<Span, String> predictSpanOut) {
         super(goldSpanOut, predictSpanOut);
@@ -39,7 +30,7 @@ public class JsonReporter extends Reporter {
 
     @Override
     public String report() {
-        JSONObject obj = new JSONObject();
+        Map<String,Number> obj = new HashMap<>();
 
         /*
         obj.put("reference-counts", eval.countReferenceOutcomes());
@@ -55,7 +46,7 @@ public class JsonReporter extends Reporter {
         obj.put("fp", eval.countFalsePositives());
         obj.put("tp", eval.countTruePositives());
 
-        return obj.toJSONString();
+        return Serializer.toJson(obj);
     }
 
 
