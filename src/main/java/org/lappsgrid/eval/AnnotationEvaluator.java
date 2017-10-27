@@ -19,6 +19,7 @@ package org.lappsgrid.eval;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.parser.ParseException;
 import org.lappsgrid.api.WebService;
+import org.lappsgrid.discriminator.Discriminators;
 import org.lappsgrid.eval.reporter.HtmlReporter;
 import org.lappsgrid.eval.model.Span;
 import org.lappsgrid.eval.reporter.JsonReporter;
@@ -28,8 +29,6 @@ import org.lappsgrid.serialization.Serializer;
 import org.lappsgrid.serialization.lif.Annotation;
 import org.lappsgrid.serialization.lif.Container;
 import org.lappsgrid.serialization.lif.View;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +38,7 @@ import java.util.Map;
 
 /**
  * @author Di Wang.
+ * @author Alexandru Mahmoud
  */
 
 public class AnnotationEvaluator implements WebService {
@@ -49,14 +49,14 @@ public class AnnotationEvaluator implements WebService {
     public static final String EVALUATION_CONFIGURATION_NAME = "evaluation-configuration";
 
 
-    static public String evaluate(Container container, EvaluationConfig evalConfig) throws IOException,
+    static public Map evaluate(Container predictedData, Container goldData, EvaluationConfig evalConfig) throws IOException,
             ParseException {
 //        logger.info("Evaluating container");
-        List<Annotation> goldAnnotations = findAnnotations(container,
+        List<Annotation> goldAnnotations = findAnnotations(predictedData,
                 evalConfig.getGoldAnnotationType(),
                 evalConfig.getGoldAnnotationProducer(), evalConfig.getGoldAnnotationFeature());
 
-        List<Annotation> testAnnotations = findAnnotations(container,
+        List<Annotation> testAnnotations = findAnnotations(goldData,
                 evalConfig.getTestAnnotationType(),
                 evalConfig.getTestAnnotationProducer(), evalConfig.getTestAnnotationFeature());
 
@@ -68,14 +68,20 @@ public class AnnotationEvaluator implements WebService {
             case "json":
                 reporter = new JsonReporter(goldSpanOutMap, testSpanOutMap);
                 break;
+            /*
             case "html":
                 reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, container.getText(), evalConfig);
                 break;
+            */
             default:
-                reporter = new HtmlReporter(goldSpanOutMap, testSpanOutMap, container.getText(), evalConfig);
+                reporter = new JsonReporter(goldSpanOutMap, testSpanOutMap);
                 break;
         }
-        return reporter.report();
+
+        String reporterResult = reporter.report();
+        Map predictedMetadata = predictedData.getMetadata();
+        predictedMetadata.put("confusion-matrix", reporterResult);
+        return predictedMetadata;
     }
 
 
@@ -121,27 +127,48 @@ public class AnnotationEvaluator implements WebService {
     public String execute(String input) {
         //input = setDefaultEvalConfig(input); //for testing example
 //        logger.info("AnnotationEvaluator started... with input size: {}", input.length());
-        System.out.println("AnnotationEvaluator started... with input size: " + input.length());
-        String eval_result = "";
+        //System.out.println("AnnotationEvaluator started... with input size: " + input.length());
+
+        Container predictedData;
         try {
-            Data<Object> result = Serializer.parse(input, Data.class);
-            Object payload = result.getPayload();
-            Container container = new Container((Map) payload);
 
-            Map<String, String> evalConfigMap = (Map<String, String>) container.getMetadata(EVALUATION_CONFIGURATION_NAME);
+            Data<Object> data = Serializer.parse(input, Data.class);
+            String discriminator = data.getDiscriminator();
 
+            // Return ERRORS back
+            if (Discriminators.Uri.ERROR.equals(discriminator))
+            {
+                return input;
+            }
+
+
+            // If the input discriminator is wrong, return an error
+            else if(!Discriminators.Uri.DOCUMENT.equals(discriminator))
+            {
+                return new Data(Discriminators.Uri.ERROR, "Invalid input").asJson();
+            }
+
+            Map payloadMap = (Map) data.getPayload();
+            Container goldData = new Container((Map) payloadMap.get("gold"));
+            predictedData = new Container((Map) payloadMap.get("predicted"));
+            
             ObjectMapper mapper = new ObjectMapper();
             EvaluationConfig evalConfig = mapper.convertValue(evalConfigMap, EvaluationConfig.class);
 
             if (evalConfig == null) {
                 evalConfig = new EvaluationConfig(); // use default
             }
-            eval_result = evaluate(container, evalConfig);
+
+            Map eval_result = evaluate(predictedData, goldData, evalConfig);
+            //System.out.println("AnnotationEvaluator ended with output size: " + eval_result.length());
+            predictedData.setMetadata(eval_result);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("AnnotationEvaluator ended with output size: " + eval_result.length());
-        return eval_result;
+
+        return new Data(Discriminators.Uri.LIF, predictedData).asJson();
     }
 
     private String setDefaultEvalConfig(String data) {

@@ -27,6 +27,12 @@ import java.util.*;
 
 public class JsonReporter extends Reporter {
 
+    // TODO: Change to calculate the confusion matrix for the results of the comparison
+    // TODO: and store that as a JSON data inside the metadata
+
+    //TODO: Iterate over all the documents and calculate the f-score, precision: how many right, recall: how many from , confusion matrix,
+    //TODo: Calculate for all and sum + divide
+
     public JsonReporter(Map<Span, String> goldSpanOut, Map<Span, String> predictSpanOut) {
         super(goldSpanOut, predictSpanOut);
     }
@@ -34,12 +40,21 @@ public class JsonReporter extends Reporter {
     @Override
     public String report() {
         JSONObject obj = new JSONObject();
+
+        /*
         obj.put("reference-counts", eval.countReferenceOutcomes());
         obj.put("predicted-counts", eval.countPredictedOutcomes());
         obj.put("correct-counts", eval.countCorrectOutcomes());
         obj.put("precision", eval.precision());
         obj.put("recall", eval.recall());
         obj.put("f1", eval.f1());
+        */
+
+        obj.put("tn", eval.countTrueNegatives());
+        obj.put("fn", eval.countFalseNegatives());
+        obj.put("fp", eval.countFalsePositives());
+        obj.put("tp", eval.countTruePositives());
+
         return obj.toJSONString();
     }
 
