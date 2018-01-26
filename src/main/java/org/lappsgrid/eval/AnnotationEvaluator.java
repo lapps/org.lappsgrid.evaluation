@@ -155,7 +155,7 @@ public class AnnotationEvaluator implements WebService {
 
 
             // If the input discriminator is wrong, return an error
-            else if(!DISCRIMINATOR.equals(discriminator))
+            else if(!Discriminators.Uri.LAPPS.equals(discriminator))
             {
                 return new Data(Discriminators.Uri.ERROR, "Invalid input").asJson();
             }
