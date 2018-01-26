@@ -64,6 +64,7 @@ public class AnnotationEvaluator implements WebService {
         Map<Span, String> goldSpanOutMap = getSpanOutcomeMap(goldAnnotations, evalConfig.getGoldAnnotationFeature());
         Map<Span, String> testSpanOutMap = getSpanOutcomeMap(testAnnotations, evalConfig.getTestAnnotationFeature());
 
+
         Reporter reporter;
         String result = null;
         switch (evalConfig.getOutputFormat()) {
