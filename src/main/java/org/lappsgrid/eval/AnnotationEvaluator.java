@@ -53,7 +53,6 @@ public class AnnotationEvaluator implements WebService {
 
     static public String evaluate(Container predictedData, Container goldData, EvaluationConfig evalConfig) throws IOException,
             ParseException {
-//        logger.info("Evaluating container");
         List<Annotation> goldAnnotations = findAnnotations(predictedData,
                 evalConfig.getGoldAnnotationType(),
                 evalConfig.getGoldAnnotationProducer(), evalConfig.getGoldAnnotationFeature());
@@ -64,6 +63,7 @@ public class AnnotationEvaluator implements WebService {
 
         Map<Span, String> goldSpanOutMap = getSpanOutcomeMap(goldAnnotations, evalConfig.getGoldAnnotationFeature());
         Map<Span, String> testSpanOutMap = getSpanOutcomeMap(testAnnotations, evalConfig.getTestAnnotationFeature());
+
 
         Reporter reporter;
         String result = null;
