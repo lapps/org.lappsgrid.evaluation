@@ -53,7 +53,6 @@ public class AnnotationEvaluator implements WebService {
 
     static public String evaluate(Container predictedData, Container goldData, EvaluationConfig evalConfig) throws IOException,
             ParseException {
-//        logger.info("Evaluating container");
         List<Annotation> goldAnnotations = findAnnotations(predictedData,
                 evalConfig.getGoldAnnotationType(),
                 evalConfig.getGoldAnnotationProducer(), evalConfig.getGoldAnnotationFeature());
