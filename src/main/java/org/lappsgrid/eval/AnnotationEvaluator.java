@@ -46,7 +46,7 @@ public class AnnotationEvaluator implements WebService {
 
     public static final String DISCRIMINATOR = "http://vocab.lappsgrid.org/ns/media/jsonld#document-list";
 
-    public static final String VERSION = "0.0.1-SNAPSHOT";
+    public static final String VERSION = Version.getVersion();
 
     public static final String EVALUATION_CONFIGURATION_NAME = "evaluation-configuration";
 
